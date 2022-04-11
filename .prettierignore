@@ -1,0 +1,23 @@
+# Ignore artifacts:
+build
+coverage
+
+*.html
+*.js
+*.json
+*.prettierignore
+*.png
+*.ico
+*.env
+*.yml
+*.gitignore
+*.eslintignore
+*.lock
+*.map
+*.svg
+*.sh
+*.xml
+*.patch
+*.iml
+pre-commit
+Dockerfile
