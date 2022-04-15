@@ -1,42 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
-import {FRAME_RESULT_TYPE, Step, computeScore, CurrentThrow, computeNextStep, verifyResultType, FRAME_RESULT_TYPE} from "./GameRules";
-
+import { computeScore, computeNextStep, verifyResultType } from "./game/gameRules";
+import { CurrentThrow } from "./game/currentThrow";
+import { FrameResultType } from "./game/frameResultType";
+import { FrameResult } from "./game/frameResult";
+import { Step } from "./game/step";
+import usePlayerGame from "./game/usePlayerGame";
 
 function GameScreen() {
-  interface ThrowResult {
-    throwNumber: number;
-    knockedPinsCount: number;
-  }
-
-  interface FrameResult {
-    frameNumber: number;
-    resultType: FRAME_RESULT_TYPE;
-    throwResults: ThrowResult[];
-  }
-
-  const [currentThrow, setCurrentThrow] = useState({
-    throwNumber: 1,
-    frameNumber: 1,
-    resultType: FRAME_RESULT_TYPE.REGULAR,
-  });
-  const [framesScore, setFramesScore] = useState([
-    { frameNumber: 1, score: 0 },
-  ]);
-  const [framesResults, setFramesResults] = useState([
-    { frameNumber: 1, resultType: FRAME_RESULT_TYPE.REGULAR, throwResults: [] },
-  ] as FrameResult[]);
   const [pinsInputValue, setPinsInputValue] = useState(0);
+  const { currentThrow, framesResults, framesScore, getFrameResults, onUpdateCurrentThrow, onUpdateFramesResults, onUpdateFramesScore } = usePlayerGame();
 
-  const updateFrameThrowResult = (
-    currentThrow: CurrentThrow,
-    frameResultType: FRAME_RESULT_TYPE,
-    knockedPinsCount: number
-  ): void => {
-    const currentFrameIndex = framesResults.findIndex(
-      (frameResult: FrameResult) =>
-        frameResult.frameNumber === currentThrow.frameNumber
-    );
+  const updateFrameThrowResult = (currentThrow: CurrentThrow, frameResultType: FrameResultType, knockedPinsCount: number): void => {
+    const currentFrameIndex = framesResults.findIndex((frameResult: FrameResult) => frameResult.frameNumber === currentThrow.frameNumber);
 
     const currentFrameResults = framesResults[currentFrameIndex].throwResults;
     const currentThrowResult = {
@@ -49,62 +25,40 @@ function GameScreen() {
       throwResults: [...currentFrameResults, currentThrowResult],
     };
     framesResults[currentFrameIndex] = updatedFrameResult;
-    setFramesResults(framesResults);
+    onUpdateFramesResults(framesResults);
   };
 
-  // what to do when this append, find can return undefined
-  // TODO replace with throw error and catch it later
-  const getFrameResults = (frameNumber: number): FrameResult => {
-    const results = framesResults.find(
-      (frameResult: FrameResult) => frameResult.frameNumber === frameNumber
-    );
-    if (results) {
-      return results;
-    }
-    return {
-      frameNumber: 0,
-      resultType: FRAME_RESULT_TYPE.REGULAR,
-      throwResults: [],
-    };
-  };
-
-  const getPreviousThrowKnockedPinsCount = (
-    currentThrow: CurrentThrow
-  ): number => {
+  const getPreviousThrowKnockedPinsCount = (currentThrow: CurrentThrow): number => {
     // prend pour acquis que le current throw number == 2 a cause du if dans lequel est appele la methode
-    const currentFrameResults = getFrameResults(currentThrow.frameNumber);
-    const previousThrowKnockedPinsCount =
-      currentFrameResults.throwResults[0].knockedPinsCount;
+    let previousThrowKnockedPinsCount = 0;
+    if (currentThrow.throwNumber >= 2) {
+      const currentFrameResults = getFrameResults(currentThrow.frameNumber);
+      previousThrowKnockedPinsCount = currentFrameResults.throwResults[0].knockedPinsCount;
+    }
     return previousThrowKnockedPinsCount;
   };
 
   const initNextFrame = (currentThrow: CurrentThrow): void => {
     // no need to verify if 10th frame end game because already verify before, should we verify it quand meme?
-    setCurrentThrow({
+    onUpdateCurrentThrow({
       throwNumber: 1,
       frameNumber: currentThrow.frameNumber + 1,
-      resultType: FRAME_RESULT_TYPE.REGULAR,
+      resultType: FrameResultType.REGULAR,
     });
-    setFramesResults([
+    onUpdateFramesResults([
       ...framesResults,
       {
         frameNumber: currentThrow.frameNumber + 1,
-        resultType: FRAME_RESULT_TYPE.REGULAR,
+        resultType: FrameResultType.REGULAR,
         throwResults: [],
       },
     ]);
 
-    setFramesScore([
-      ...framesScore,
-      { frameNumber: currentThrow.frameNumber + 1, score: 0 },
-    ]);
+    onUpdateFramesScore([...framesScore, { frameNumber: currentThrow.frameNumber + 1, score: 0 }]);
   };
 
-  const initNextThrow = (
-    resultType: FRAME_RESULT_TYPE,
-    currentThrow: CurrentThrow
-  ): void => {
-    setCurrentThrow({
+  const initNextThrow = (resultType: FrameResultType, currentThrow: CurrentThrow): void => {
+    onUpdateCurrentThrow({
       ...currentThrow,
       throwNumber: currentThrow.throwNumber + 1,
       resultType: resultType,
@@ -117,26 +71,25 @@ function GameScreen() {
     // disable input and submit button
   };
 
-  const findNextStep = (frameResultType: FRAME_RESULT_TYPE): void => {
+  const findNextStep = (frameResultType: FrameResultType): void => {
     const nextStep = computeNextStep(currentThrow, frameResultType);
     if (nextStep === Step.NEXT_FRAME) {
       initNextFrame(currentThrow);
     } else if (nextStep === Step.NEXT_THROW) {
-      initNextThrow(frameResultType, currentThrow)
+      initNextThrow(frameResultType, currentThrow);
     } else {
       endGame();
     }
   };
 
   const submitKnockedPinsCount = (): void => {
+    // TODO logique du jeu ne devrait pas leaker dans le code du bouton
     const knockedPinsCount = Number(pinsInputValue);
-    const frameResultType = verifyResultType(
-      currentThrow,
-      knockedPinsCount,
-      getPreviousThrowKnockedPinsCount(currentThrow)
-    );
+    const frameResultType = verifyResultType(currentThrow, knockedPinsCount, getPreviousThrowKnockedPinsCount(currentThrow));
     updateFrameThrowResult(currentThrow, frameResultType, knockedPinsCount);
-    computeScore(currentThrow, knockedPinsCount);
+    // TODO avoid this (verify previous frame number) maybe separer en deux computeScore, compute previous score
+    const previousFrameNumber = currentThrow.frameNumber - 1;
+    computeScore(currentThrow, knockedPinsCount, getFrameResults(previousFrameNumber), framesScore, onUpdateFramesScore);
     findNextStep(frameResultType);
     setPinsInputValue(0);
   };
@@ -154,26 +107,12 @@ function GameScreen() {
 
       <div>
         {framesScore.map((result: any) => (
-          <div key={result.frameNumber}>
-            {" "}
-            {"frame # " + result.frameNumber + " " + result.score}
-          </div>
+          <div key={result.frameNumber}> {"frame # " + result.frameNumber + " " + result.score}</div>
         ))}
       </div>
 
-      <TextField
-        id="outlined-basic"
-        label="Count down Pins"
-        variant="outlined"
-        value={pinsInputValue}
-        onChange={handleInputChange}
-        type="number"
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={submitKnockedPinsCount}
-      >
+      <TextField id="outlined-basic" label="Count down Pins" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
+      <Button variant="contained" color="primary" onClick={submitKnockedPinsCount}>
         Submit
       </Button>
       <div>Frame score</div>
