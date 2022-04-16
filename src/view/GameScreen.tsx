@@ -9,6 +9,7 @@ import usePlayerGame from "../game/usePlayerGame";
 import ResultsPanel from "./resultsPanel";
 import styled from "styled-components";
 import FramePanel from "./framePanel";
+import EndGameModal from "./endGameModal";
 
 const StyledContainer = styled.div`
   padding: 30px;
@@ -21,6 +22,7 @@ const ResultsPanelContainer = styled.div`
 `;
 
 function GameScreen() {
+  const [isEndGameModalOpen, setIsEndGameModalOpen] = useState(false);
   const { currentThrow, framesResults, framesScore, getFrameResults, onUpdateCurrentThrow, onUpdateFramesResults, onUpdateFramesScore } = usePlayerGame();
 
   const updateFrameThrowResult = (currentThrow: CurrentThrow, frameResultType: FrameResultType, knockedPinsCount: number): void => {
@@ -78,8 +80,7 @@ function GameScreen() {
   };
 
   const endGame = (): void => {
-    console.log("END GAME");
-    // pop up with final score + start new game
+    setIsEndGameModalOpen(true);
     // disable input and submit button
   };
 
@@ -105,13 +106,22 @@ function GameScreen() {
   };
 
   const resetGame = (): void => {
-    onUpdateCurrentThrow({ throwNumber: 1, frameNumber: 1, resultType: [] });
-    onUpdateFramesResults([]);
-    onUpdateFramesScore([]);
+    onUpdateCurrentThrow({ throwNumber: 1, frameNumber: 1, resultType: FrameResultType.REGULAR });
+    onUpdateFramesResults([{ frameNumber: 1, resultType: FrameResultType.REGULAR, throwResults: [] }]);
+    onUpdateFramesScore([{ frameNumber: 1, score: 0 }]);
   };
 
   const handleResetGame = (): void => {
     resetGame();
+  };
+
+  const startNewGame = (): void => {
+    setIsEndGameModalOpen(false);
+    resetGame();
+  };
+
+  const closeEndGameModal = (): void => {
+    setIsEndGameModalOpen(false);
   };
 
   return (
@@ -125,6 +135,7 @@ function GameScreen() {
       <Button variant="outlined" color="primary" onClick={handleResetGame}>
         Reset game
       </Button>
+      <EndGameModal finalScore={100} startNewGame={startNewGame} open={isEndGameModalOpen} handleClose={closeEndGameModal} />
     </div>
   );
 }
