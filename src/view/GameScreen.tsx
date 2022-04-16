@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
-import { computeScore, computeNextStep, verifyResultType } from "./game/gameRules";
-import { CurrentThrow } from "./game/currentThrow";
-import { FrameResultType } from "./game/frameResultType";
-import { FrameResult } from "./game/frameResult";
-import { Step } from "./game/step";
-import usePlayerGame from "./game/usePlayerGame";
+import { computeScore, computeNextStep, verifyResultType } from "../game/gameRules";
+import { CurrentThrow } from "../game/currentThrow";
+import { FrameResultType } from "../game/frameResultType";
+import { FrameResult } from "../game/frameResult";
+import { Step } from "../game/step";
+import usePlayerGame from "../game/usePlayerGame";
+import ResultsPanel from "./resultsPanel";
 
 function GameScreen() {
   const [pinsInputValue, setPinsInputValue] = useState(0);
@@ -105,11 +106,7 @@ function GameScreen() {
       <div>{"FRAME NUMBER " + currentThrow.frameNumber}</div>
       <div>{"THROW NUMBER " + currentThrow.throwNumber}</div>
 
-      <div>
-        {framesScore.map((result: any) => (
-          <div key={result.frameNumber}> {"frame # " + result.frameNumber + " " + result.score}</div>
-        ))}
-      </div>
+      <ResultsPanel framesResults={framesResults} framesScore={framesScore}/>
 
       <TextField id="outlined-basic" label="Count down Pins" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
       <Button variant="contained" color="primary" onClick={submitKnockedPinsCount}>

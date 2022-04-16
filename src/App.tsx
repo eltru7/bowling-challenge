@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import GameScreen from "./GameScreen";
+import GameScreen from "./view/GameScreen";
 import { Routes, Route, Link } from "react-router-dom";
 
 function App() {
