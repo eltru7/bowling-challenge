@@ -7,6 +7,11 @@ import { FrameResult } from "../game/frameResult";
 import { Step } from "../game/step";
 import usePlayerGame from "../game/usePlayerGame";
 import ResultsPanel from "./resultsPanel";
+import styled from "styled-components";
+
+const ResultsPanelContainer = styled.div`
+  max-width: 400px;
+`;
 
 function GameScreen() {
   const [pinsInputValue, setPinsInputValue] = useState(0);
@@ -103,17 +108,13 @@ function GameScreen() {
 
   return (
     <div className="GameScreen">
-      <div>{"FRAME NUMBER " + currentThrow.frameNumber}</div>
-      <div>{"THROW NUMBER " + currentThrow.throwNumber}</div>
-
-      <ResultsPanel framesResults={framesResults} framesScore={framesScore}/>
-
       <TextField id="outlined-basic" label="Count down Pins" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
       <Button variant="contained" color="primary" onClick={submitKnockedPinsCount}>
         Submit
       </Button>
-      <div>Frame score</div>
-      <div>Total score</div>
+      <ResultsPanelContainer>
+        <ResultsPanel framesResults={framesResults} framesScore={framesScore} />
+      </ResultsPanelContainer>
     </div>
   );
 }
