@@ -9,6 +9,12 @@ import ResultsPanel from "./resultsPanel";
 import styled from "styled-components";
 import FramePanel from "./framePanel";
 
+const StyledContainer = styled.div`
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+`;
+
 const ResultsPanelContainer = styled.div`
   max-width: 400px;
 `;
@@ -99,10 +105,12 @@ function GameScreen() {
 
   return (
     <div className="GameScreen">
-      <FramePanel currentThrow={currentThrow} submitKnockedPinsCount={submitKnockedPinsCount} />
-      <ResultsPanelContainer>
-        <ResultsPanel framesResults={framesResults} framesScore={framesScore} />
-      </ResultsPanelContainer>
+      <StyledContainer>
+        <FramePanel currentThrow={currentThrow} submitKnockedPinsCount={submitKnockedPinsCount} />
+        <ResultsPanelContainer>
+          <ResultsPanel framesResults={framesResults} framesScore={framesScore} />
+        </ResultsPanelContainer>
+      </StyledContainer>
     </div>
   );
 }

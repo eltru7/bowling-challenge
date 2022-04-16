@@ -11,11 +11,17 @@ interface ResultsPanelProps {
 
 const StyledFramePanel = styled.div`
   display: flex;
+  flex-direction: column;
 `;
 
-const StyledLabel = styled.div`
+const StyledLabels = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const StyledInputContainer = styled.div`
+  display: flex;
+  padding: 20px;
 `;
 
 const FramePanel: FC<ResultsPanelProps> = ({ currentThrow, submitKnockedPinsCount }) => {
@@ -33,15 +39,17 @@ const FramePanel: FC<ResultsPanelProps> = ({ currentThrow, submitKnockedPinsCoun
 
   return (
     <StyledFramePanel>
-      <StyledLabel>
+      <StyledLabels>
         <div>{`Frame: ${currentThrow.frameNumber}`}</div>
         <div>{`Throw: ${currentThrow.throwNumber}`}</div>
         <div>{`Pins available: 10`}</div>
-      </StyledLabel>
-      <TextField id="outlined-basic" label="Knocked Down Pins" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
-      <Button variant="outlined" color="primary" onClick={handleSubmit}>
-        Submit
-      </Button>
+      </StyledLabels>
+      <StyledInputContainer>
+        <TextField id="outlined-basic" label="Knocked Down Pins" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
+        <Button variant="outlined" color="primary" onClick={handleSubmit}>
+          Submit
+        </Button>
+      </StyledInputContainer>
     </StyledFramePanel>
   );
 };
