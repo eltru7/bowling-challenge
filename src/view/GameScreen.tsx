@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Button, TextField } from "@mui/material";
 import { computeScore, computeNextStep, verifyResultType } from "../game/gameRules";
 import { CurrentThrow } from "../game/currentThrow";
 import { FrameResultType } from "../game/frameResultType";
@@ -8,13 +7,13 @@ import { Step } from "../game/step";
 import usePlayerGame from "../game/usePlayerGame";
 import ResultsPanel from "./resultsPanel";
 import styled from "styled-components";
+import FramePanel from "./framePanel";
 
 const ResultsPanelContainer = styled.div`
   max-width: 400px;
 `;
 
 function GameScreen() {
-  const [pinsInputValue, setPinsInputValue] = useState(0);
   const { currentThrow, framesResults, framesScore, getFrameResults, onUpdateCurrentThrow, onUpdateFramesResults, onUpdateFramesScore } = usePlayerGame();
 
   const updateFrameThrowResult = (currentThrow: CurrentThrow, frameResultType: FrameResultType, knockedPinsCount: number): void => {
@@ -88,30 +87,19 @@ function GameScreen() {
     }
   };
 
-  const submitKnockedPinsCount = (): void => {
+  const submitKnockedPinsCount = (knockedPinsCount: number): void => {
     // TODO logique du jeu ne devrait pas leaker dans le code du bouton
-    const knockedPinsCount = Number(pinsInputValue);
     const frameResultType = verifyResultType(currentThrow, knockedPinsCount, getPreviousThrowKnockedPinsCount(currentThrow));
     updateFrameThrowResult(currentThrow, frameResultType, knockedPinsCount);
     // TODO avoid this (verify previous frame number) maybe separer en deux computeScore, compute previous score
     const previousFrameNumber = currentThrow.frameNumber - 1;
     computeScore(currentThrow, knockedPinsCount, getFrameResults(previousFrameNumber), framesScore, onUpdateFramesScore);
     findNextStep(frameResultType);
-    setPinsInputValue(0);
-  };
-
-  // TODO replace any
-  // TODO input can accept number between 0 and 10 only
-  const handleInputChange = (event: any): void => {
-    setPinsInputValue(event.target.value);
   };
 
   return (
     <div className="GameScreen">
-      <TextField id="outlined-basic" label="Count down Pins" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
-      <Button variant="contained" color="primary" onClick={submitKnockedPinsCount}>
-        Submit
-      </Button>
+      <FramePanel currentThrow={currentThrow} submitKnockedPinsCount={submitKnockedPinsCount} />
       <ResultsPanelContainer>
         <ResultsPanel framesResults={framesResults} framesScore={framesScore} />
       </ResultsPanelContainer>
