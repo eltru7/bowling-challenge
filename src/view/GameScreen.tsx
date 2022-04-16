@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "@mui/material/Button";
 import { computeScore, computeNextStep, verifyResultType } from "../game/gameRules";
 import { CurrentThrow } from "../game/currentThrow";
 import { FrameResultType } from "../game/frameResultType";
@@ -103,6 +104,16 @@ function GameScreen() {
     findNextStep(frameResultType);
   };
 
+  const resetGame = (): void => {
+    onUpdateCurrentThrow({ throwNumber: 1, frameNumber: 1, resultType: [] });
+    onUpdateFramesResults([]);
+    onUpdateFramesScore([]);
+  };
+
+  const handleResetGame = (): void => {
+    resetGame();
+  };
+
   return (
     <div className="GameScreen">
       <StyledContainer>
@@ -111,6 +122,9 @@ function GameScreen() {
           <ResultsPanel framesResults={framesResults} framesScore={framesScore} />
         </ResultsPanelContainer>
       </StyledContainer>
+      <Button variant="outlined" color="primary" onClick={handleResetGame}>
+        Reset game
+      </Button>
     </div>
   );
 }

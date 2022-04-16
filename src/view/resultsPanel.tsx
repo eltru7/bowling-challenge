@@ -62,7 +62,7 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScore }) => 
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell>Total</TableCell>
-            <TableCell align="center">{framesScore.slice(-1)[0].score}</TableCell>
+            <TableCell align="center">{framesScore.length === 0 ? 0 : framesScore.slice(-1)[0].score}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
