@@ -4,11 +4,16 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import { Route, Routes } from "react-router";
+import GameScreen from "./view/GameScreen";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/game" element={<GameScreen />} />
+      </Routes>
     </BrowserRouter>
     ,
   </React.StrictMode>,

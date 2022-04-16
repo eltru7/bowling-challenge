@@ -13,9 +13,6 @@ function StartPage() {
           <Link to="/game">Start a new game</Link>
         </Button>
       </nav>
-      <Routes>
-        <Route path="game" element={<GameScreen />} />
-      </Routes>
     </div>
   );
 }
