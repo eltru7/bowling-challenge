@@ -2,11 +2,12 @@ import React, { FC, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField/TextField";
 import styled from "styled-components";
-import { CurrentThrow } from "../game/currentThrow";
+import { CurrentFrame } from "../game/currentFrame";
 
 interface ResultsPanelProps {
-  currentThrow: CurrentThrow;
-  submitKnockedPinsCount: any;
+  nbAvailablePinsToKnock: number;
+  currentFrame: CurrentFrame;
+  submitKnockedPinsCount: (nbKnockedDownPins: number) => void;
 }
 
 const StyledFramePanel = styled.div`
@@ -24,7 +25,7 @@ const StyledInputContainer = styled.div`
   padding: 20px;
 `;
 
-const FramePanel: FC<ResultsPanelProps> = ({ currentThrow, submitKnockedPinsCount }) => {
+const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFrame, submitKnockedPinsCount }) => {
   const [pinsInputValue, setPinsInputValue] = useState(0);
 
   // TODO remove any
@@ -40,12 +41,12 @@ const FramePanel: FC<ResultsPanelProps> = ({ currentThrow, submitKnockedPinsCoun
   return (
     <StyledFramePanel>
       <StyledLabels>
-        <div>{`Frame: ${currentThrow.frameNumber}`}</div>
-        <div>{`Throw: ${currentThrow.throwNumber}`}</div>
-        <div>{`Pins available: 10`}</div>
+        <div>{`Frame: ${currentFrame.frameNumber}`}</div>
+        <div>{`Throw: ${currentFrame.throwNumber}`}</div>
+        <div>{`Nb of pins available to hit: ${nbAvailablePinsToKnock}`}</div>
       </StyledLabels>
       <StyledInputContainer>
-        <TextField id="outlined-basic" label="Knocked Down Pins" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
+        <TextField id="outlined-basic" label="Nb of pins knocked down" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
         <Button variant="outlined" color="primary" onClick={handleSubmit}>
           Submit
         </Button>
