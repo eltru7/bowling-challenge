@@ -1,7 +1,6 @@
 import React from "react";
 import logo from "../bowling.jpeg";
-import GameScreen from "./GameScreen";
-import { Routes, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 
 function StartPage() {

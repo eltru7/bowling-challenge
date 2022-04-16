@@ -1,17 +1,16 @@
 import { useState } from "react";
 import { FrameResultType } from "./frameResultType";
 import { FrameResult } from "./frameResult";
-import { FrameScore } from "./frameScore";
+import { FramesScores } from "./frameScore";
 import { CurrentFrame } from "./currentFrame";
 
 type GameHook = {
   currentFrame: CurrentFrame;
   framesResults: FrameResult[];
-  framesScore: FrameScore[];
-  getFrameResults: (frameNumber: number) => FrameResult;
+  framesScores: FramesScores;
   onUpdateCurrentFrame: (currentFrame: CurrentFrame) => void;
-  onUpdateFramesResults: (frameResult: FrameResult[]) => void;
-  onUpdateFramesScore: (framesScore: FrameScore[]) => void;
+  onUpdateFramesResults: (updatedFramesResults: FrameResult[]) => void;
+  onUpdateFramesScores: (updatedFramesScores: FramesScores) => void;
 };
 
 const usePlayerGame = (): GameHook => {
@@ -22,7 +21,7 @@ const usePlayerGame = (): GameHook => {
     throwsResult: [{ throwNumber: 1, knockedPinsCount: 0 }],
   });
 
-  const [framesScore, setFramesScore] = useState([{ frameNumber: 1, score: 0 }]);
+  const [framesScores, setFramesScores] = useState({});
 
   const [framesResults, setFramesResults] = useState([{ frameNumber: 1, resultType: FrameResultType.REGULAR, throwResults: [] }] as FrameResult[]);
 
@@ -34,32 +33,17 @@ const usePlayerGame = (): GameHook => {
     setFramesResults(updatedFramesResults);
   };
 
-  const onUpdateFramesScore = (updatedFramesScore: FrameScore[]): void => {
-    setFramesScore(updatedFramesScore);
-  };
-
-  // what to do when this append, find can return undefined
-  // TODO replace with throw error and catch it later
-  const getFrameResults = (frameNumber: number): FrameResult => {
-    const results = framesResults.find((frameResult: FrameResult) => frameResult.frameNumber === frameNumber);
-    if (results) {
-      return results;
-    }
-    return {
-      frameNumber: 0,
-      resultType: FrameResultType.REGULAR,
-      throwResults: [],
-    };
+  const onUpdateFramesScores = (updatedFramesScores: FramesScores): void => {
+    setFramesScores(updatedFramesScores);
   };
 
   return {
     currentFrame,
     framesResults,
-    framesScore,
-    getFrameResults,
+    framesScores,
     onUpdateCurrentFrame,
     onUpdateFramesResults,
-    onUpdateFramesScore,
+    onUpdateFramesScores,
   };
 };
 

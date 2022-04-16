@@ -24,7 +24,35 @@ const ResultsPanelContainer = styled.div`
 function GameScreen() {
   const [isEndGameModalOpen, setIsEndGameModalOpen] = useState(false);
   const [nbAvailablePinsToKnock, setNbAvailablePinsToKnock] = useState(NB_PINS_PER_FRAME);
-  const { currentFrame, framesResults, framesScore, getFrameResults, onUpdateCurrentFrame, onUpdateFramesResults, onUpdateFramesScore } = usePlayerGame();
+  const { currentFrame, framesResults, framesScores, onUpdateCurrentFrame, onUpdateFramesResults, onUpdateFramesScores } = usePlayerGame();
+
+  const initNextThrow = (resultType: FrameResultType, currentFrame: CurrentFrame, knockedPinsCount: number): void => {
+    const updatedCurrentThrowResult = { throwNumber: currentFrame.throwNumber, knockedPinsCount: knockedPinsCount };
+    const nextThrowResult = { throwNumber: currentFrame.throwNumber + 1, knockedPinsCount: 0 };
+    onUpdateCurrentFrame({
+      ...currentFrame,
+      throwNumber: currentFrame.throwNumber + 1,
+      resultType: resultType,
+      throwsResult: [updatedCurrentThrowResult, nextThrowResult],
+    });
+  };
+
+  const initNextFrame = (currentFrame: CurrentFrame): void => {
+    onUpdateCurrentFrame({
+      throwNumber: 1,
+      frameNumber: currentFrame.frameNumber + 1,
+      resultType: FrameResultType.REGULAR,
+      throwsResult: [],
+    });
+    onUpdateFramesResults([
+      ...framesResults,
+      {
+        frameNumber: currentFrame.frameNumber + 1,
+        resultType: FrameResultType.REGULAR,
+        throwResults: [],
+      },
+    ]);
+  };
 
   const updateFrameThrowResult = (currentFrame: CurrentFrame, frameResultType: FrameResultType, knockedPinsCount: number): void => {
     const currentFrameIndex = framesResults.findIndex((frameResult: FrameResult) => frameResult.frameNumber === currentFrame.frameNumber);
@@ -43,41 +71,6 @@ function GameScreen() {
     onUpdateFramesResults(framesResults);
   };
 
-  const initNextFrame = (currentFrame: CurrentFrame): void => {
-    onUpdateCurrentFrame({
-      throwNumber: 1,
-      frameNumber: currentFrame.frameNumber + 1,
-      resultType: FrameResultType.REGULAR,
-      throwsResult: [],
-    });
-    onUpdateFramesResults([
-      ...framesResults,
-      {
-        frameNumber: currentFrame.frameNumber + 1,
-        resultType: FrameResultType.REGULAR,
-        throwResults: [],
-      },
-    ]);
-
-    onUpdateFramesScore([...framesScore, { frameNumber: currentFrame.frameNumber + 1, score: 0 }]);
-  };
-
-  const initNextThrow = (resultType: FrameResultType, currentFrame: CurrentFrame, knockedPinsCount: number): void => {
-    const updatedCurrentThrowResult = { throwNumber: currentFrame.throwNumber, knockedPinsCount: knockedPinsCount };
-    const nextThrowResult = { throwNumber: currentFrame.throwNumber + 1, knockedPinsCount: 0 };
-    onUpdateCurrentFrame({
-      ...currentFrame,
-      throwNumber: currentFrame.throwNumber + 1,
-      resultType: resultType,
-      throwsResult: [updatedCurrentThrowResult, nextThrowResult],
-    });
-  };
-
-  const endGame = (): void => {
-    setIsEndGameModalOpen(true);
-    // disable input and submit button
-  };
-
   const findNextStep = (frameResultType: FrameResultType, knockedPinsCount: number): void => {
     const nextStep = computeNextStep(currentFrame, frameResultType, knockedPinsCount);
     if (nextStep.type === StepType.NEXT_FRAME) {
@@ -91,19 +84,16 @@ function GameScreen() {
   };
 
   const submitKnockedPinsCount = (knockedPinsCount: number): void => {
-    // TODO logique du jeu ne devrait pas leaker dans le code du bouton
     const frameResultType = verifyResultType(currentFrame, knockedPinsCount);
     updateFrameThrowResult(currentFrame, frameResultType, knockedPinsCount);
-    // TODO avoid this (verify previous frame number) maybe separer en deux computeScore, compute previous score
-    const previousFrameNumber = currentFrame.frameNumber - 1;
-    computeScore(currentFrame, knockedPinsCount, getFrameResults(previousFrameNumber), framesScore, onUpdateFramesScore);
+    computeScore(currentFrame, knockedPinsCount, frameResultType, framesResults, framesScores, onUpdateFramesScores);
     findNextStep(frameResultType, knockedPinsCount);
   };
 
   const resetGame = (): void => {
     onUpdateCurrentFrame({ throwNumber: 1, frameNumber: 1, resultType: FrameResultType.REGULAR, throwsResult: [] });
     onUpdateFramesResults([{ frameNumber: 1, resultType: FrameResultType.REGULAR, throwResults: [] }]);
-    onUpdateFramesScore([{ frameNumber: 1, score: 0 }]);
+    onUpdateFramesScores({});
   };
 
   const handleResetGame = (): void => {
@@ -115,6 +105,10 @@ function GameScreen() {
     resetGame();
   };
 
+  const endGame = (): void => {
+    setIsEndGameModalOpen(true);
+  };
+
   const closeEndGameModal = (): void => {
     setIsEndGameModalOpen(false);
   };
@@ -124,7 +118,7 @@ function GameScreen() {
       <StyledContainer>
         <FramePanel nbAvailablePinsToKnock={nbAvailablePinsToKnock} currentFrame={currentFrame} submitKnockedPinsCount={submitKnockedPinsCount} />
         <ResultsPanelContainer>
-          <ResultsPanel framesResults={framesResults} framesScore={framesScore} />
+          <ResultsPanel framesResults={framesResults} framesScore={framesScores} />
         </ResultsPanelContainer>
       </StyledContainer>
       <Button variant="outlined" color="primary" onClick={handleResetGame}>

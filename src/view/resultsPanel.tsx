@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -8,11 +8,11 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { FrameResult } from "../game/frameResult";
-import { FrameScore } from "../game/frameScore";
+import { FramesScores } from "../game/frameScore";
 
 interface ResultsPanelProps {
   framesResults: FrameResult[];
-  framesScore: FrameScore[];
+  framesScore: FramesScores;
 }
 
 const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScore }) => {
@@ -35,6 +35,9 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScore }) => 
     },
   }));
 
+  console.log("framesscores");
+  console.log(framesScore);
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 200 }} aria-label="customized table">
@@ -54,7 +57,7 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScore }) => 
               <StyledTableCell align="center">{frameResult && frameResult.throwResults.length > 0 ? frameResult.throwResults[0].knockedPinsCount : "-"}</StyledTableCell>
               <StyledTableCell align="center">{frameResult && frameResult.throwResults.length > 1 ? frameResult.throwResults[1].knockedPinsCount : "-"}</StyledTableCell>
               <StyledTableCell align="center">{frameResult && frameResult.throwResults.length > 2 ? frameResult.throwResults[2].knockedPinsCount : "-"}</StyledTableCell>
-              <StyledTableCell align="center">{framesScore[frameResult.frameNumber - 1].score}</StyledTableCell>
+              <StyledTableCell align="center">543</StyledTableCell>
             </StyledTableRow>
           ))}
           <TableRow>
@@ -62,7 +65,7 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScore }) => 
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell>Total</TableCell>
-            <TableCell align="center">{framesScore.length === 0 ? 0 : framesScore.slice(-1)[0].score}</TableCell>
+            <TableCell align="center">434543</TableCell>
           </TableRow>
         </TableBody>
       </Table>
