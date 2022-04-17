@@ -62,7 +62,9 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScores }) =>
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell>Total</TableCell>
-            <TableCell align="center">{framesScores && framesScores[framesResults.length] && framesScores[framesResults.length].score}</TableCell>
+            <TableCell data-testid="scoreCell" align="center">
+              {framesScores && framesScores[framesResults.length] && framesScores[framesResults.length].score}
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>
