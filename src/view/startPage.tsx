@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 function StartPage() {
   return (
     <div>
-      <img src={logo} className="App-logo" alt="logo" />
+      <img src={logo} className="StartPage" alt="logo" />
       <nav>
         <Button variant="outlined">
           <Link to="/game">Start a new game</Link>

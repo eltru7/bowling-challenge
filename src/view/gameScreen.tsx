@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { NB_PINS_PER_FRAME, computeScore, computeNextStep, verifyResultType } from "../game/gameRules";
-import { CurrentFrame, FrameResult, FrameResultType, StepType } from "../game/types";
 import ResultsPanel from "./resultsPanel";
 import styled from "styled-components";
 import FramePanel from "./framePanel";
 import EndGameModal from "./endGameModal";
 import MenuBar from "./menuBar";
 import useGame from "../game/useGame";
+import { FrameResult, FrameResultType } from "../game/types/frameResult";
+import { CurrentFrame } from "../game/types/currentFrame";
+import { StepType } from "../game/types/step";
 
 const StyledGameContainer = styled.div`
   display: flex;

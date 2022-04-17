@@ -1,6 +1,4 @@
-type ThrowResult = {
+export interface ThrowResult {
   throwNumber: number;
   nbKnockedDownPins: number;
-};
-
-export default ThrowResult;
+}

@@ -1,5 +1,6 @@
 import { computeNextStep, computeScore, NB_PINS_PER_FRAME, verifyResultType } from "./gameRules";
-import { FrameResultType, StepType } from "./types";
+import { FrameResultType } from "./types/frameResult";
+import { StepType } from "./types/step";
 
 describe("GameRules", () => {
   describe("when computing the result type", () => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { screen, render } from "@testing-library/react";
 import ResultsPanel from "./resultsPanel";
-import { FrameResultType } from "../game/types";
+import { FrameResultType } from "../game/types/frameResult";
 
 const renderResultsPanel = (): void => {
   const framesResults = [

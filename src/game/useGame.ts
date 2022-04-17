@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { CurrentFrame, FrameResult, FrameResultType, FramesScores } from "./types";
+import { CurrentFrame } from "./types/currentFrame";
+import { FrameResult, FrameResultType } from "./types/frameResult";
+import { FramesScores } from "./types/framesScores";
 
 type GameHook = {
   currentFrame: CurrentFrame;

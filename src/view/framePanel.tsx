@@ -1,9 +1,9 @@
 import React, { FC, useState } from "react";
 import Button from "@mui/material/Button";
 import styled from "styled-components";
-import { CurrentFrame } from "../game/types";
 import Rating from "@mui/material/Rating/Rating";
 import { Typography } from "@mui/material";
+import { CurrentFrame } from "../game/types/currentFrame";
 
 interface ResultsPanelProps {
   nbAvailablePinsToKnock: number;
