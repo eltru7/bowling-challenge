@@ -20,6 +20,9 @@ const style = {
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
+  display: "flex",
+  gap: "20px",
+  flexDirection: "column",
 };
 
 const EndGameModal: FC<EndGameModalProps> = ({ finalScore, startNewGame, open, handleClose }) => {

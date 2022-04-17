@@ -12,9 +12,10 @@ interface ResultsPanelProps {
 }
 
 const StyledFramePanel = styled.div`
+  padding: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 10px;
 `;
 
 const StyledLabels = styled.div`
@@ -23,9 +24,10 @@ const StyledLabels = styled.div`
 `;
 
 const StyledInputContainer = styled.div`
+  width: 250px;
   display: flex;
-  padding: 20px;
   flex-direction: column;
+  gap: 10px;
 `;
 
 const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFrame, submitNbKnockDownPins }) => {
@@ -57,7 +59,7 @@ const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFram
         <div>{errorMessage}</div>
       </StyledLabels>
       <StyledInputContainer>
-        <Typography component="legend">Nb of pins knocked down</Typography>
+        <Typography component="legend">Nb of pins knocked down:</Typography>
         <Rating
           name="customized-10"
           value={nbPins}

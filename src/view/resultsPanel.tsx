@@ -37,7 +37,7 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScores }) =>
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 200 }} aria-label="customized table">
+      <Table sx={{ minWidth: 200 }} size="small">
         <TableHead>
           <TableRow>
             <StyledTableCell>Frame </StyledTableCell>
