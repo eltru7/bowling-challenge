@@ -89,8 +89,7 @@ export const computeScore = (
   nbKnockedDownPins: number,
   frameResultType: FrameResultType,
   framesResults: FrameResult[],
-  framesScores: FramesScores,
-  onUpdateFramesScore: any
+  onUpdateFramesScore: (framesScores: FramesScores) => void
 ): void => {
   let updatedFramesScores = {};
 
