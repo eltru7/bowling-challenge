@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Button from "@mui/material/Button";
 import { NB_PINS_PER_FRAME, computeScore, computeNextStep, verifyResultType } from "../game/gameRules";
 import { CurrentFrame } from "../game/currentFrame";
 import { FrameResultType } from "../game/frameResultType";
@@ -10,20 +9,17 @@ import ResultsPanel from "./resultsPanel";
 import styled from "styled-components";
 import FramePanel from "./framePanel";
 import EndGameModal from "./endGameModal";
+import MenuBar from "./menuBar";
 
-const StyledContainer = styled.div`
-  padding: 30px;
+const StyledGameContainer = styled.div`
   display: flex;
   justify-content: space-around;
+  min-height: 500px;
+  padding: 10px;
 `;
 
 const ResultsPanelContainer = styled.div`
   max-width: 400px;
-`;
-
-const Header = styled.div`
-  padding: 20px;
-  justify-content: right;
 `;
 
 function GameScreen() {
@@ -91,7 +87,7 @@ function GameScreen() {
   const submitNbKnockDownPins = (nbKnockedDownPins: number): void => {
     const frameResultType = verifyResultType(currentFrame, nbKnockedDownPins);
     updateFrameThrowResult(currentFrame, frameResultType, nbKnockedDownPins);
-    computeScore(currentFrame, nbKnockedDownPins, frameResultType, framesResults, framesScores, onUpdateFramesScores);
+    computeScore(currentFrame, nbKnockedDownPins, frameResultType, framesResults, onUpdateFramesScores);
     findNextStep(frameResultType, nbKnockedDownPins);
   };
 
@@ -120,18 +116,14 @@ function GameScreen() {
   };
 
   return (
-    <div className="GameScreen">
-      <Header>
-        <Button variant="outlined" color="primary" onClick={handleResetGame}>
-          Reset game
-        </Button>
-      </Header>
-      <StyledContainer>
+    <div>
+      <MenuBar handleResetGame={handleResetGame} />
+      <StyledGameContainer>
         <FramePanel nbAvailablePinsToKnock={nbAvailablePinsToKnock} currentFrame={currentFrame} submitNbKnockDownPins={submitNbKnockDownPins} />
         <ResultsPanelContainer>
           <ResultsPanel framesResults={framesResults} framesScores={framesScores} />
         </ResultsPanelContainer>
-      </StyledContainer>
+      </StyledGameContainer>
       <EndGameModal
         finalScore={framesScores[NB_PINS_PER_FRAME] && framesScores[NB_PINS_PER_FRAME].score}
         open={isEndGameModalOpen}
