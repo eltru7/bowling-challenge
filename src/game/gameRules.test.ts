@@ -7,7 +7,7 @@ describe("GameRules", () => {
       const nbKnockedDownPins = NB_PINS_PER_FRAME;
       const currentFrame = { frameNumber: 1, throwNumber: 1, resultType: FrameResultType.OPEN, throwsResult: [] };
 
-      it("should return the right result type", () => {
+      it("should return the strike result type", () => {
         const resultType = verifyResultType(currentFrame, nbKnockedDownPins);
         const expectedResultType = FrameResultType.STRIKE;
 
@@ -19,7 +19,7 @@ describe("GameRules", () => {
       const nbKnockedDownPins = 4;
       const currentFrame = { frameNumber: 1, throwNumber: 2, resultType: FrameResultType.OPEN, throwsResult: [{ throwNumber: 1, nbKnockedDownPins: 6 }] };
 
-      it("should return the right result type", () => {
+      it("should return the spare result type", () => {
         const expectedResultType = FrameResultType.SPARE;
         const resultType = verifyResultType(currentFrame, nbKnockedDownPins);
 
@@ -35,7 +35,7 @@ describe("GameRules", () => {
           const currentFrame = { frameNumber: 1, throwNumber: 1, resultType: FrameResultType.OPEN, throwsResult: [] };
           const nbKnockedDownPinsFirstThrow = 10;
 
-          it("should return the right step", () => {
+          it("should return NEXT_FRAME as the next step", () => {
             const expectedNbAvailablePinsToKnock = NB_PINS_PER_FRAME;
             const expectedNextStep = { type: StepType.NEXT_FRAME, nbAvailablePinsToKnock: expectedNbAvailablePinsToKnock };
 
@@ -49,7 +49,7 @@ describe("GameRules", () => {
           const currentFrame = { frameNumber: 1, throwNumber: 1, resultType: FrameResultType.OPEN, throwsResult: [] };
           const nbKnockedDownPinsFirstThrow = 3;
 
-          it("should return the right step", () => {
+          it("should return NEXT_THROW as the next step", () => {
             const expectedNbAvailablePinsToKnock = NB_PINS_PER_FRAME - nbKnockedDownPinsFirstThrow;
             const expectedNextStep = { type: StepType.NEXT_THROW, nbAvailablePinsToKnock: expectedNbAvailablePinsToKnock };
 
