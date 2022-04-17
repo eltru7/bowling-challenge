@@ -86,6 +86,7 @@ function GameScreen() {
   const submitKnockedPinsCount = (knockedPinsCount: number): void => {
     const frameResultType = verifyResultType(currentFrame, knockedPinsCount);
     updateFrameThrowResult(currentFrame, frameResultType, knockedPinsCount);
+    // TODO attention order is important, if updateFrame is before computeScore, then throwResult passed to computeScore will be already updated, no need to add nb knocked pins
     computeScore(currentFrame, knockedPinsCount, frameResultType, framesResults, framesScores, onUpdateFramesScores);
     findNextStep(frameResultType, knockedPinsCount);
   };

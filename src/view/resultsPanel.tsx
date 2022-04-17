@@ -35,9 +35,6 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScore }) => 
     },
   }));
 
-  console.log("framesscores");
-  console.log(framesScore);
-
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 200 }} aria-label="customized table">
