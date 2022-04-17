@@ -1,18 +1,20 @@
 import React, { FC, useState } from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField/TextField";
 import styled from "styled-components";
 import { CurrentFrame } from "../game/currentFrame";
+import Rating from "@mui/material/Rating/Rating";
+import { Typography } from "@mui/material";
 
 interface ResultsPanelProps {
   nbAvailablePinsToKnock: number;
   currentFrame: CurrentFrame;
-  submitKnockedPinsCount: (nbKnockedDownPins: number) => void;
+  submitNbKnockDownPins: (nbKnockedDownPins: number) => void;
 }
 
 const StyledFramePanel = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
 `;
 
 const StyledLabels = styled.div`
@@ -23,10 +25,11 @@ const StyledLabels = styled.div`
 const StyledInputContainer = styled.div`
   display: flex;
   padding: 20px;
+  flex-direction: column;
 `;
 
-const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFrame, submitKnockedPinsCount }) => {
-  const [pinsInputValue, setPinsInputValue] = useState("");
+const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFrame, submitNbKnockDownPins }) => {
+  const [nbPins, setNbPins] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
 
   const isNbKnockedDownPinsValid = (pinsInputValue: number): boolean => {
@@ -37,18 +40,13 @@ const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFram
     return false;
   };
 
-  // TODO remove any
-  const handleInputChange = (event: any): void => {
-    setPinsInputValue(event.target.value);
-  };
-
   const handleSubmit = (): void => {
     setErrorMessage("");
-    const nbKnockedDownPins = Number(pinsInputValue);
+    const nbKnockedDownPins = Number(nbPins);
     if (isNbKnockedDownPinsValid(nbKnockedDownPins)) {
-      submitKnockedPinsCount(nbKnockedDownPins);
+      submitNbKnockDownPins(nbKnockedDownPins);
     }
-    setPinsInputValue("");
+    setNbPins(0);
   };
 
   return (
@@ -56,11 +54,19 @@ const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFram
       <StyledLabels>
         <div>{`Frame: ${currentFrame.frameNumber}`}</div>
         <div>{`Throw: ${currentFrame.throwNumber}`}</div>
-        <div>{`Nb of pins available to hit: ${nbAvailablePinsToKnock}`}</div>
         <div>{errorMessage}</div>
       </StyledLabels>
       <StyledInputContainer>
-        <TextField id="outlined-basic" label="Nb of pins knocked down" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
+        <Typography component="legend">Nb of pins knocked down</Typography>
+        <Rating
+          name="customized-10"
+          value={nbPins}
+          defaultValue={0}
+          onChange={(event: any, newValue: any) => {
+            setNbPins(newValue);
+          }}
+          max={nbAvailablePinsToKnock}
+        />
         <Button variant="outlined" color="primary" onClick={handleSubmit}>
           Submit
         </Button>

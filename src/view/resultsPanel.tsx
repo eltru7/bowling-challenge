@@ -51,9 +51,9 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScores }) =>
           {framesResults.map((frameResult: FrameResult) => (
             <StyledTableRow key={frameResult.frameNumber}>
               <StyledTableCell align="center">{frameResult.frameNumber}</StyledTableCell>
-              <StyledTableCell align="center">{frameResult.throwResults.length > 0 ? frameResult.throwResults[0].knockedPinsCount : "-"}</StyledTableCell>
-              <StyledTableCell align="center">{frameResult.throwResults.length > 1 ? frameResult.throwResults[1].knockedPinsCount : "-"}</StyledTableCell>
-              <StyledTableCell align="center">{frameResult.throwResults.length > 2 ? frameResult.throwResults[2].knockedPinsCount : "-"}</StyledTableCell>
+              <StyledTableCell align="center">{frameResult.throwResults.length > 0 ? frameResult.throwResults[0].nbKnockedDownPins : "-"}</StyledTableCell>
+              <StyledTableCell align="center">{frameResult.throwResults.length > 1 ? frameResult.throwResults[1].nbKnockedDownPins : "-"}</StyledTableCell>
+              <StyledTableCell align="center">{frameResult.throwResults.length > 2 ? frameResult.throwResults[2].nbKnockedDownPins : "-"}</StyledTableCell>
               <StyledTableCell align="center">{framesScores && framesScores[frameResult.frameNumber] && framesScores[frameResult.frameNumber].score}</StyledTableCell>
             </StyledTableRow>
           ))}
