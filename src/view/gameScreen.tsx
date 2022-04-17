@@ -119,7 +119,7 @@ function GameScreen() {
       <StyledContainer>
         <FramePanel nbAvailablePinsToKnock={nbAvailablePinsToKnock} currentFrame={currentFrame} submitKnockedPinsCount={submitKnockedPinsCount} />
         <ResultsPanelContainer>
-          <ResultsPanel framesResults={framesResults} framesScore={framesScores} />
+          <ResultsPanel framesResults={framesResults} framesScores={framesScores} />
         </ResultsPanelContainer>
       </StyledContainer>
       <Button variant="outlined" color="primary" onClick={handleResetGame}>

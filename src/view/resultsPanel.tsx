@@ -12,10 +12,10 @@ import { FramesScores } from "../game/frameScore";
 
 interface ResultsPanelProps {
   framesResults: FrameResult[];
-  framesScore: FramesScores;
+  framesScores: FramesScores;
 }
 
-const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScore }) => {
+const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScores }) => {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -51,10 +51,10 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScore }) => 
           {framesResults.map((frameResult: FrameResult) => (
             <StyledTableRow key={frameResult.frameNumber}>
               <StyledTableCell align="center">{frameResult.frameNumber}</StyledTableCell>
-              <StyledTableCell align="center">{frameResult && frameResult.throwResults.length > 0 ? frameResult.throwResults[0].knockedPinsCount : "-"}</StyledTableCell>
-              <StyledTableCell align="center">{frameResult && frameResult.throwResults.length > 1 ? frameResult.throwResults[1].knockedPinsCount : "-"}</StyledTableCell>
-              <StyledTableCell align="center">{frameResult && frameResult.throwResults.length > 2 ? frameResult.throwResults[2].knockedPinsCount : "-"}</StyledTableCell>
-              <StyledTableCell align="center">543</StyledTableCell>
+              <StyledTableCell align="center">{frameResult.throwResults.length > 0 ? frameResult.throwResults[0].knockedPinsCount : "-"}</StyledTableCell>
+              <StyledTableCell align="center">{frameResult.throwResults.length > 1 ? frameResult.throwResults[1].knockedPinsCount : "-"}</StyledTableCell>
+              <StyledTableCell align="center">{frameResult.throwResults.length > 2 ? frameResult.throwResults[2].knockedPinsCount : "-"}</StyledTableCell>
+              <StyledTableCell align="center">{framesScores && framesScores[frameResult.frameNumber] && framesScores[frameResult.frameNumber].score}</StyledTableCell>
             </StyledTableRow>
           ))}
           <TableRow>
@@ -62,7 +62,7 @@ const ResultsPanel: FC<ResultsPanelProps> = ({ framesResults, framesScore }) => 
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell>Total</TableCell>
-            <TableCell align="center">434543</TableCell>
+            <TableCell align="center">{framesScores && framesScores[framesResults.length] && framesScores[framesResults.length].score}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
