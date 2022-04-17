@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { NB_PINS_PER_FRAME, computeScore, computeNextStep, verifyResultType } from "../game/gameRules";
-import { CurrentFrame } from "../game/currentFrame";
-import { FrameResultType } from "../game/frameResultType";
-import { FrameResult } from "../game/frameResult";
-import { StepType } from "../game/step";
-import usePlayerGame from "../game/usePlayerGame";
+import { CurrentFrame, FrameResult, FrameResultType, StepType } from "../game/types";
 import ResultsPanel from "./resultsPanel";
 import styled from "styled-components";
 import FramePanel from "./framePanel";
 import EndGameModal from "./endGameModal";
 import MenuBar from "./menuBar";
+import useGame from "../game/useGame";
 
 const StyledGameContainer = styled.div`
   display: flex;
@@ -25,7 +22,7 @@ const ResultsPanelContainer = styled.div`
 function GameScreen() {
   const [isEndGameModalOpen, setIsEndGameModalOpen] = useState(false);
   const [nbAvailablePinsToKnock, setNbAvailablePinsToKnock] = useState(NB_PINS_PER_FRAME);
-  const { currentFrame, framesResults, framesScores, onUpdateCurrentFrame, onUpdateFramesResults, onUpdateFramesScores } = usePlayerGame();
+  const { currentFrame, framesResults, framesScores, onUpdateCurrentFrame, onUpdateFramesResults, onUpdateFramesScores } = useGame();
 
   const initNextThrow = (resultType: FrameResultType, currentFrame: CurrentFrame, nbKnockedDownPins: number): void => {
     const updatedCurrentThrowResult = { throwNumber: currentFrame.throwNumber, nbKnockedDownPins: nbKnockedDownPins };

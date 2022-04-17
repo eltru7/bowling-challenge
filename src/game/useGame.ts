@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { FrameResultType } from "./frameResultType";
-import { FrameResult } from "./frameResult";
-import { FramesScores } from "./frameScore";
-import { CurrentFrame } from "./currentFrame";
+import { CurrentFrame, FrameResult, FrameResultType, FramesScores } from "./types";
 
 type GameHook = {
   currentFrame: CurrentFrame;
@@ -13,7 +10,7 @@ type GameHook = {
   onUpdateFramesScores: (updatedFramesScores: FramesScores) => void;
 };
 
-const usePlayerGame = (): GameHook => {
+const useGame = (): GameHook => {
   const [currentFrame, setCurrentFrame] = useState({
     frameNumber: 1,
     throwNumber: 1,
@@ -47,4 +44,4 @@ const usePlayerGame = (): GameHook => {
   };
 };
 
-export default usePlayerGame;
+export default useGame;
