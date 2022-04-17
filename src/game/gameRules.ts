@@ -108,7 +108,4 @@ export const computeScore = (
   }
 
   onUpdateFramesScore(updatedFramesScores);
-
-  console.log("updatedFramesScores");
-  console.log(updatedFramesScores);
 };
