@@ -26,7 +26,16 @@ const StyledInputContainer = styled.div`
 `;
 
 const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFrame, submitKnockedPinsCount }) => {
-  const [pinsInputValue, setPinsInputValue] = useState(0);
+  const [pinsInputValue, setPinsInputValue] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const isNbKnockedDownPinsValid = (pinsInputValue: number): boolean => {
+    if (pinsInputValue >= 0 && pinsInputValue <= nbAvailablePinsToKnock) {
+      return true;
+    }
+    setErrorMessage("Invalid number of knocked down pins");
+    return false;
+  };
 
   // TODO remove any
   const handleInputChange = (event: any): void => {
@@ -34,8 +43,12 @@ const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFram
   };
 
   const handleSubmit = (): void => {
-    submitKnockedPinsCount(Number(pinsInputValue));
-    setPinsInputValue(0);
+    setErrorMessage("");
+    const nbKnockedDownPins = Number(pinsInputValue);
+    if (isNbKnockedDownPinsValid(nbKnockedDownPins)) {
+      submitKnockedPinsCount(nbKnockedDownPins);
+    }
+    setPinsInputValue("");
   };
 
   return (
@@ -44,6 +57,7 @@ const FramePanel: FC<ResultsPanelProps> = ({ nbAvailablePinsToKnock, currentFram
         <div>{`Frame: ${currentFrame.frameNumber}`}</div>
         <div>{`Throw: ${currentFrame.throwNumber}`}</div>
         <div>{`Nb of pins available to hit: ${nbAvailablePinsToKnock}`}</div>
+        <div>{errorMessage}</div>
       </StyledLabels>
       <StyledInputContainer>
         <TextField id="outlined-basic" label="Nb of pins knocked down" variant="outlined" value={pinsInputValue} onChange={handleInputChange} type="number" />
