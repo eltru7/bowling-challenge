@@ -1,104 +1,111 @@
 import { FrameResultType } from "./frameResultType";
-import { CurrentThrow } from "./currentThrow";
-import { Step } from "./step";
-import { FrameScore } from "./frameScore";
+import { CurrentFrame } from "./currentFrame";
+import { Step, StepType } from "./step";
+import { FramesScores } from "./frameScore";
 import { FrameResult } from "./frameResult";
+import _ from "lodash";
 
-const MAX_PINS_COUNT = 10;
+export const NB_PINS_PER_FRAME = 10;
+const STRIKE_NB_BONUS_THROWS = 2;
+const SPARE_NB_BONUS_THROWS = 1;
 
-const computePreviousFrameBonusPoint = (previousFrameResultType: FrameResultType, currentThrow: CurrentThrow, knockedPinsCount: number): number => {
-  let bonusPoints = 0;
-  if (previousFrameResultType === FrameResultType.STRIKE && currentThrow.throwNumber <= 2) {
-    bonusPoints = knockedPinsCount;
-  } else if (previousFrameResultType === FrameResultType.SPARE && currentThrow.throwNumber === 1) {
-    bonusPoints = knockedPinsCount;
-  }
-  return bonusPoints;
-};
-
-const computeCurrentFrameScore = (
-  knockedPinsCount: number,
-  currentThrow: CurrentThrow,
-  previousFramePoints: number,
-  previousFrameBonusPoints: number,
-  framesScore: any,
-  onUpdateFramesScore: any
-): void => {
-  // TODO find a better way to update object in array
-  const currentFrameScoreIndex = framesScore.findIndex((frameScore: FrameScore) => frameScore.frameNumber === currentThrow.frameNumber);
-  const currentFrameScore = framesScore[currentFrameScoreIndex].score;
-
-  let updatedCurrentFrameScore = 0;
-  if (currentThrow.throwNumber === 1) {
-    updatedCurrentFrameScore = previousFramePoints + knockedPinsCount;
-  } else {
-    updatedCurrentFrameScore = currentFrameScore + previousFrameBonusPoints + knockedPinsCount;
-  }
-
-  framesScore[currentFrameScoreIndex] = {
-    frameNumber: currentThrow.frameNumber,
-    score: updatedCurrentFrameScore,
-  };
-  onUpdateFramesScore(framesScore);
-};
-
-export const verifyResultType = (currentThrow: CurrentThrow, knockedPinsCount: number, previousThrowKnockedPins: number): FrameResultType => {
-  if (currentThrow.resultType === FrameResultType.STRIKE || currentThrow.resultType === FrameResultType.SPARE) {
-    return currentThrow.resultType;
-  } else {
-    return computeResultType(currentThrow, knockedPinsCount, previousThrowKnockedPins);
-  }
-};
-
-export const computeNextStep = (currentThrow: CurrentThrow, frameResultType: FrameResultType): Step => {
-  if (currentThrow.frameNumber < 10 && frameResultType !== FrameResultType.STRIKE && currentThrow.throwNumber === 1) {
-    return Step.NEXT_THROW;
-  } else if (currentThrow.frameNumber === 10 && frameResultType === FrameResultType.STRIKE && currentThrow.throwNumber <= 2) {
-    return Step.NEXT_THROW;
-    // tient pour acquis que compute avant que si spare, cest quon est au moins au tour 2
-  } else if (currentThrow.frameNumber === 10 && frameResultType === FrameResultType.SPARE && currentThrow.throwNumber === 2) {
-    return Step.NEXT_THROW;
-  } else if (currentThrow.frameNumber === 10 && frameResultType !== FrameResultType.STRIKE && frameResultType !== FrameResultType.SPARE && currentThrow.throwNumber === 1) {
-    return Step.NEXT_THROW;
-  } else if (currentThrow.frameNumber < 10 && frameResultType === FrameResultType.STRIKE) {
-    return Step.NEXT_FRAME;
-  } else if (currentThrow.frameNumber < 10 && currentThrow.throwNumber === 2) {
-    return Step.NEXT_FRAME;
-  } else {
-    return Step.END_GAME;
-  }
-};
-
-const computeResultType = (currentThrow: CurrentThrow, knockedPinsCount: number, previousThrowKnockedPinsCount: number): FrameResultType => {
-  if (currentThrow.throwNumber === 1 && knockedPinsCount === MAX_PINS_COUNT) {
+const computeResultType = (currentFrame: CurrentFrame, knockedPinsCount: number): FrameResultType => {
+  if (currentFrame.throwNumber === 1 && knockedPinsCount === NB_PINS_PER_FRAME) {
     return FrameResultType.STRIKE;
-  } else if (currentThrow.throwNumber === 2 && previousThrowKnockedPinsCount + knockedPinsCount === MAX_PINS_COUNT) {
+  } else if (currentFrame.throwNumber === 2 && currentFrame.throwsResult[0].knockedPinsCount + knockedPinsCount === NB_PINS_PER_FRAME) {
     return FrameResultType.SPARE;
   }
   return FrameResultType.REGULAR;
 };
 
-// TODO passer en param a cette function previousThrow type
-export const computeScore = (currentThrow: CurrentThrow, knockedPinsCount: number, previousFrameResult: FrameResult, framesScore: any, onUpdateFramesScore: any): void => {
-  // not take for granted that our results are in order (frame 1, 2, etc, )
-  let bonusPoint = 0;
-  let updatedPreviousFrameScore = 0;
-
-  if (currentThrow.frameNumber > 1) {
-    // recompute le previous score
-    const previousFrameNumber = currentThrow.frameNumber - 1;
-    const previousFrameScoreIndex = framesScore.findIndex((frameScore: FrameScore) => frameScore.frameNumber === previousFrameNumber);
-    const previousFrameScore = framesScore[previousFrameScoreIndex];
-
-    bonusPoint = computePreviousFrameBonusPoint(previousFrameResult.resultType, currentThrow, knockedPinsCount);
-    // TODO find a better way to update object in array
-
-    updatedPreviousFrameScore = bonusPoint + previousFrameScore.score;
-    framesScore[previousFrameScoreIndex] = {
-      frameNumber: previousFrameNumber,
-      score: updatedPreviousFrameScore,
-    };
-    onUpdateFramesScore(framesScore);
+export const verifyResultType = (currentFrame: CurrentFrame, knockedPinsCount: number): FrameResultType => {
+  if (currentFrame.resultType === FrameResultType.STRIKE || currentFrame.resultType === FrameResultType.SPARE) {
+    return currentFrame.resultType;
+  } else {
+    return computeResultType(currentFrame, knockedPinsCount);
   }
-  computeCurrentFrameScore(knockedPinsCount, currentThrow, updatedPreviousFrameScore, bonusPoint, framesScore, onUpdateFramesScore);
+};
+
+export const computeNextStep = (currentFrame: CurrentFrame, frameResultType: FrameResultType, nbKnockedDownPins: number): Step => {
+  if (currentFrame.frameNumber < 10 && frameResultType !== FrameResultType.STRIKE && currentFrame.throwNumber === 1) {
+    return { type: StepType.NEXT_THROW, nbAvailablePinsToKnock: NB_PINS_PER_FRAME - nbKnockedDownPins };
+  } else if (currentFrame.frameNumber === 10 && frameResultType === FrameResultType.STRIKE && currentFrame.throwNumber === 1) {
+    return { type: StepType.NEXT_THROW, nbAvailablePinsToKnock: NB_PINS_PER_FRAME };
+  } else if (currentFrame.frameNumber === 10 && frameResultType === FrameResultType.STRIKE && currentFrame.throwNumber === 2) {
+    return { type: StepType.NEXT_THROW, nbAvailablePinsToKnock: NB_PINS_PER_FRAME - nbKnockedDownPins };
+  } else if (currentFrame.frameNumber === 10 && frameResultType === FrameResultType.SPARE && currentFrame.throwNumber === 2) {
+    return { type: StepType.NEXT_THROW, nbAvailablePinsToKnock: NB_PINS_PER_FRAME };
+  } else if (currentFrame.frameNumber === 10 && frameResultType !== FrameResultType.STRIKE && frameResultType !== FrameResultType.SPARE && currentFrame.throwNumber === 1) {
+    return { type: StepType.NEXT_THROW, nbAvailablePinsToKnock: NB_PINS_PER_FRAME - nbKnockedDownPins };
+  } else if (currentFrame.frameNumber < 10 && frameResultType === FrameResultType.STRIKE) {
+    return { type: StepType.NEXT_FRAME, nbAvailablePinsToKnock: 10 };
+  } else if (currentFrame.frameNumber < 10 && currentFrame.throwNumber === 2) {
+    return { type: StepType.NEXT_FRAME, nbAvailablePinsToKnock: 10 };
+  } else {
+    return { type: StepType.END_GAME, nbAvailablePinsToKnock: 0 };
+  }
+};
+
+const findPreviousFrameScore = (frameResult: FrameResult, framesScores: FramesScores): number => {
+  let previousFrameScore = 0;
+  if (frameResult.frameNumber > 1) {
+    const previousFrameNumber = frameResult.frameNumber - 1;
+    previousFrameScore = framesScores[previousFrameNumber].score;
+  }
+  return previousFrameScore;
+};
+
+const getNextThrowNbKnockedDownPins = (nbBonusThrows: number, frameResult: FrameResult, framesResults: FrameResult[]): number => {
+  let bonusPoints = 0;
+  const allFramesThrows = [];
+
+  for (const frameResult of framesResults) {
+    for (const throwResult of frameResult.throwResults) {
+      allFramesThrows.push({ frameNumber: frameResult.frameNumber, ...throwResult });
+    }
+  }
+  const lastThrowNumber = frameResult.resultType === FrameResultType.STRIKE ? 1 : 2;
+  const indexOfFrameResult = allFramesThrows.findIndex((throwResult) => throwResult.frameNumber === frameResult.frameNumber && throwResult.throwNumber === lastThrowNumber);
+  if (indexOfFrameResult + 1 <= allFramesThrows.length - 1) {
+    for (let nextThrowIndex = indexOfFrameResult + 1; nextThrowIndex <= indexOfFrameResult + nbBonusThrows; nextThrowIndex++) {
+      let points = allFramesThrows[nextThrowIndex] ? allFramesThrows[nextThrowIndex].knockedPinsCount : 0;
+      bonusPoints += points;
+    }
+  }
+
+  return bonusPoints;
+};
+
+// TODO si change en object, plus besoins de passer 2 params mais juste FramesResults
+const computeBonusPoints = (frameResult: FrameResult, framesResults: FrameResult[]): number => {
+  let bonusPoints = 0;
+  if (frameResult.resultType === FrameResultType.STRIKE) {
+    bonusPoints = getNextThrowNbKnockedDownPins(STRIKE_NB_BONUS_THROWS, frameResult, framesResults);
+  } else if (frameResult.resultType === FrameResultType.SPARE) {
+    bonusPoints = getNextThrowNbKnockedDownPins(SPARE_NB_BONUS_THROWS, frameResult, framesResults);
+  }
+  return bonusPoints;
+};
+
+export const computeScore = (
+  currentFrame: CurrentFrame,
+  knockedPinsCount: number,
+  frameResultType: FrameResultType,
+  framesResults: FrameResult[],
+  framesScores: FramesScores,
+  onUpdateFramesScore: any
+): void => {
+  let updatedFramesScores = {};
+
+  for (const frameResult of framesResults) {
+    // TODO transform framesResults array into object to access results easily
+    let currentFrameSumPoints = _.sumBy(framesResults[frameResult.frameNumber - 1].throwResults, "knockedPinsCount");
+    let previousFrameScore = findPreviousFrameScore(frameResult, updatedFramesScores);
+    let bonusPoints = computeBonusPoints(frameResult, framesResults);
+    const updatedFramePoints = currentFrameSumPoints + previousFrameScore + bonusPoints;
+    const updatedFrameScore = { [frameResult.frameNumber]: { score: updatedFramePoints } };
+    updatedFramesScores = { ...updatedFramesScores, ...updatedFrameScore };
+  }
+
+  onUpdateFramesScore(updatedFramesScores);
 };

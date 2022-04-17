@@ -1,64 +1,49 @@
 import { useState } from "react";
 import { FrameResultType } from "./frameResultType";
 import { FrameResult } from "./frameResult";
-import { CurrentThrow } from "./currentThrow";
-import { FrameScore } from "./frameScore";
+import { FramesScores } from "./frameScore";
+import { CurrentFrame } from "./currentFrame";
 
 type GameHook = {
-  currentThrow: any;
-  framesResults: any;
-  framesScore: any;
-  getFrameResults: any;
-  onUpdateCurrentThrow: any;
-  onUpdateFrameResult: any;
-  onUpdateFramesScore: any;
+  currentFrame: CurrentFrame;
+  framesResults: FrameResult[];
+  framesScores: FramesScores;
+  onUpdateCurrentFrame: (currentFrame: CurrentFrame) => void;
+  onUpdateFramesResults: (updatedFramesResults: FrameResult[]) => void;
+  onUpdateFramesScores: (updatedFramesScores: FramesScores) => void;
 };
 
-const usePlayerGame = (): any => {
-  const [currentThrow, setCurrentThrow] = useState({
-    throwNumber: 1,
+const usePlayerGame = (): GameHook => {
+  const [currentFrame, setCurrentFrame] = useState({
     frameNumber: 1,
+    throwNumber: 1,
     resultType: FrameResultType.REGULAR,
+    throwsResult: [{ throwNumber: 1, knockedPinsCount: 0 }],
   });
 
-  const [framesScore, setFramesScore] = useState([{ frameNumber: 1, score: 0 }]);
+  const [framesScores, setFramesScores] = useState({});
 
   const [framesResults, setFramesResults] = useState([{ frameNumber: 1, resultType: FrameResultType.REGULAR, throwResults: [] }] as FrameResult[]);
 
-  const onUpdateCurrentThrow = (updatedCurrentThrow: CurrentThrow): void => {
-    setCurrentThrow(updatedCurrentThrow);
+  const onUpdateCurrentFrame = (updatedCurrentFrame: CurrentFrame): void => {
+    setCurrentFrame(updatedCurrentFrame);
   };
 
   const onUpdateFramesResults = (updatedFramesResults: FrameResult[]): void => {
     setFramesResults(updatedFramesResults);
   };
 
-  const onUpdateFramesScore = (updatedFramesScore: FrameScore[]): void => {
-    setFramesScore(updatedFramesScore);
-  };
-
-  // what to do when this append, find can return undefined
-  // TODO replace with throw error and catch it later
-  const getFrameResults = (frameNumber: number): FrameResult => {
-    const results = framesResults.find((frameResult: FrameResult) => frameResult.frameNumber === frameNumber);
-    if (results) {
-      return results;
-    }
-    return {
-      frameNumber: 0,
-      resultType: FrameResultType.REGULAR,
-      throwResults: [],
-    };
+  const onUpdateFramesScores = (updatedFramesScores: FramesScores): void => {
+    setFramesScores(updatedFramesScores);
   };
 
   return {
-    currentThrow,
+    currentFrame,
     framesResults,
-    framesScore,
-    getFrameResults,
-    onUpdateCurrentThrow,
+    framesScores,
+    onUpdateCurrentFrame,
     onUpdateFramesResults,
-    onUpdateFramesScore,
+    onUpdateFramesScores,
   };
 };
 

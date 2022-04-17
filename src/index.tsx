@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { Route, Routes } from "react-router";
-import GameScreen from "./view/GameScreen";
+import GameScreen from "./view/gameScreen";
 
 ReactDOM.render(
   <React.StrictMode>

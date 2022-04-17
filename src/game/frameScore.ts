@@ -1,4 +1,5 @@
-export interface FrameScore {
-  frameNumber: number;
-  score: number;
+export interface FramesScores {
+  [frameNumber: number]: {
+    score: number;
+  };
 }
