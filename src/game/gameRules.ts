@@ -1,8 +1,5 @@
-import { FrameResultType } from "./frameResultType";
-import { CurrentFrame } from "./currentFrame";
-import { Step, StepType } from "./step";
-import { FramesScores } from "./frameScore";
-import { FrameResult } from "./frameResult";
+import { CurrentFrame, FramesScores, FrameResult, FrameResultType, Step, StepType } from "./types";
+
 import _ from "lodash";
 
 export const NB_PINS_PER_FRAME = 10;

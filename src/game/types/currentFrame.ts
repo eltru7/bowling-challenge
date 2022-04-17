@@ -1,9 +1,9 @@
 import { FrameResultType } from "./frameResultType";
 import { ThrowResult } from "./throwResult";
 
-export interface CurrentFrame {
+export type CurrentFrame = {
   frameNumber: number;
   throwNumber: number;
   resultType: FrameResultType;
   throwsResult: ThrowResult[];
-}
+};

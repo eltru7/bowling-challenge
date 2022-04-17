@@ -7,8 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { FrameResult } from "../game/frameResult";
-import { FramesScores } from "../game/frameScore";
+import { FrameResult, FramesScores } from "../game/types";
 
 interface ResultsPanelProps {
   framesResults: FrameResult[];

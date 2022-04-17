@@ -4,7 +4,7 @@ export enum StepType {
   END_GAME = "END_GAME",
 }
 
-export interface Step {
+export type Step = {
   type: StepType;
   nbAvailablePinsToKnock: number;
-}
+};

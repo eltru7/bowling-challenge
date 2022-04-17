@@ -1,5 +1,5 @@
-export interface FramesScores {
+export type FramesScores = {
   [frameNumber: number]: {
     score: number;
   };
-}
+};

@@ -1,8 +1,13 @@
-import { FrameResultType } from "../game/frameResultType";
 import { ThrowResult } from "./throwResult";
 
-export interface FrameResult {
+export type FrameResult = {
   frameNumber: number;
   resultType: FrameResultType;
   throwResults: ThrowResult[];
+};
+
+export enum FrameResultType {
+  STRIKE = "STRIKE",
+  SPARE = "SPARE",
+  OPEN = "OPEN",
 }
