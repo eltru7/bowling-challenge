@@ -17,13 +17,13 @@ const usePlayerGame = (): GameHook => {
   const [currentFrame, setCurrentFrame] = useState({
     frameNumber: 1,
     throwNumber: 1,
-    resultType: FrameResultType.REGULAR,
-    throwsResult: [{ throwNumber: 1, knockedPinsCount: 0 }],
+    resultType: FrameResultType.OPEN,
+    throwsResult: [{ throwNumber: 1, nbKnockedDownPins: 0 }],
   });
 
   const [framesScores, setFramesScores] = useState({});
 
-  const [framesResults, setFramesResults] = useState([{ frameNumber: 1, resultType: FrameResultType.REGULAR, throwResults: [] }] as FrameResult[]);
+  const [framesResults, setFramesResults] = useState([{ frameNumber: 1, resultType: FrameResultType.OPEN, throwResults: [] }] as FrameResult[]);
 
   const onUpdateCurrentFrame = (updatedCurrentFrame: CurrentFrame): void => {
     setCurrentFrame(updatedCurrentFrame);

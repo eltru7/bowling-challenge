@@ -1,4 +1,4 @@
 export interface ThrowResult {
   throwNumber: number;
-  knockedPinsCount: number;
+  nbKnockedDownPins: number;
 }
