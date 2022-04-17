@@ -1,5 +1,5 @@
 import { FrameResultType } from "./frameResultType";
-import { ThrowResult } from "./throwResult";
+import ThrowResult from "./throwResult";
 
 export type CurrentFrame = {
   frameNumber: number;

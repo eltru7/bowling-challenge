@@ -1,8 +1,4 @@
-export enum StepType {
-  NEXT_FRAME = "NEXT_FRAME",
-  NEXT_THROW = "NEXT_THROW",
-  END_GAME = "END_GAME",
-}
+import { StepType } from "./stepType";
 
 export type Step = {
   type: StepType;

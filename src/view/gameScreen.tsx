@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { NB_PINS_PER_FRAME, computeScore, computeNextStep, verifyResultType } from "../game/gameRules";
-import { CurrentFrame } from "../game/types/currentFrame";
-import { FrameResult, FrameResultType, StepType } from "../game/types";
+import { CurrentFrame, FrameResult, FrameResultType, StepType } from "../game/types";
 import ResultsPanel from "./resultsPanel";
 import styled from "styled-components";
 import FramePanel from "./framePanel";
