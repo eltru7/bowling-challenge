@@ -8,6 +8,7 @@ import _ from "lodash";
 export const NB_PINS_PER_FRAME = 10;
 const STRIKE_NB_BONUS_THROWS = 2;
 const SPARE_NB_BONUS_THROWS = 1;
+const MAX_TOTAL_SCORE = 300;
 
 const computeResultType = (currentFrame: CurrentFrame, nbKnockedDownPins: number): FrameResultType => {
   if (currentFrame.throwNumber === 1 && nbKnockedDownPins === NB_PINS_PER_FRAME) {
@@ -98,7 +99,7 @@ export const computeScore = (
     let previousFrameScore = findPreviousFrameScore(frameResult, updatedFramesScores);
     let bonusPoints = computeBonusPoints(frameResult, framesResults);
     const updatedFramePoints = currentFrameSumPoints + previousFrameScore + bonusPoints;
-    const updatedFrameScore = { [frameResult.frameNumber]: { score: updatedFramePoints } };
+    const updatedFrameScore = { [frameResult.frameNumber]: { score: updatedFramePoints > MAX_TOTAL_SCORE ? MAX_TOTAL_SCORE : updatedFramePoints } };
     updatedFramesScores = { ...updatedFramesScores, ...updatedFrameScore };
   }
 
